@@ -1,0 +1,53 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>게시판 프로그램</title>
+</head>
+<body>
+<center>
+<h1>게시글 목록</h1>
+<span sec:authorize="isAuthenticated()">
+	<span style="color:hotpink;" sec:authentication="principal.member.name"></span>님 게시판 입장을 환영합니다.<br>
+	<a th:href="@{/system/logout}">LOG_OUT</a>&nbsp;&nbsp;&nbsp;
+	<a th:href="@{/admin/adminPage}">게시판 관리</a>
+</span>
+<hr>
+<form th:action="@{/board/getBoardList}" method="post">
+<table th:align="center" border="1" th:cellpadding="0" th:cellspacing="0" th:width="700">
+	<tr>
+		<td align="right">
+			<select name="searchCondition">
+				<option value="TITLE">제목</option>
+				<option value="CONTENT">내용</option>
+			</select>
+			<input name="searchKeyword" type="text"/>
+			<input type="submit" value="검색"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+<table th:align="center" border="1" cellpadding="0" cellspacing="0" width="700">
+<tr>
+	<th bgcolor="orange" width="100">번호</th>
+	<th bgcolor="orange" width="200">제목</th>
+	<th bgcolor="orange" width="150">작성자</th>
+	<th bgcolor="orange" width="150">등록일</th>
+	<th bgcolor="orange" width="100">조회수</th>
+</tr>
+
+<tr th:each="board, state : ${boardList}">
+	<td th:align="center" th:text="${state.count}"></td>
+	<td><a th:href="@{/board/getBoard(seq=${board.seq})}" th:text="${board.title}"></a></td>
+	<td th:align="center" th:text="${board.member.name}"></td>
+	<td th:align="center" th:text="${#dates.format(board.createDate, 'yyyy-MM-dd')}"></td>
+	<td th:text="${board.cnt}" th:align="center"></td>
+</tr>
+
+</table>
+<a th:href="@{/board/insertBoard}">새 글 등록</a>
+</center>
+</body>
+</html>
